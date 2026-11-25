@@ -22,6 +22,11 @@ Feature: Orders api tests
     When I POST /orders
     Then http response code should be 400
 
+  Scenario: Create an order with a blank id
+    And I set http body to {"id":"","product":"Arc Reactor","quantity":1,"price":10.0,"status":"PENDING"}
+    When I POST /orders
+    Then http response code should be 400
+
   Scenario: Create a second order
     And I set http body to {"id":"2","product":"Vibranium Shield","quantity":1,"price":499.5,"status":"CONFIRMED"}
     When I POST /orders
@@ -59,6 +64,17 @@ Feature: Orders api tests
     Then http response code should be 200
     And http response body path $.id should be 1
     And http response body path $.status should be SHIPPED
+    When I GET /orders/1
+    Then http response code should be 200
+    And http response body path $.status should be SHIPPED
+
+  Scenario: Reject status update without a status
+    And I set http body to {}
+    When I PUT /orders/1/status
+    Then http response code should be 400
+    And I set http body to {"status":""}
+    When I PUT /orders/1/status
+    Then http response code should be 400
     When I GET /orders/1
     Then http response code should be 200
     And http response body path $.status should be SHIPPED
