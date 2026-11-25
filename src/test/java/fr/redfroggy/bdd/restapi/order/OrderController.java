@@ -41,7 +41,11 @@ public final class OrderController {
 
     @PutMapping("/orders/{id}/status")
     public ResponseEntity<Order> updateStatus(@PathVariable("id") String id, @RequestBody Map<String, String> body) {
-        Order updated = orderService.updateStatus(id, body.get("status"));
+        String status = body.get("status");
+        if (status == null || status.trim().isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        Order updated = orderService.updateStatus(id, status);
         if (updated == null) {
             return ResponseEntity.notFound().build();
         }
