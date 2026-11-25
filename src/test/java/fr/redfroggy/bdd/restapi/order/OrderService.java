@@ -21,7 +21,7 @@ public class OrderService {
     }
 
     public Order create(Order order) {
-        if (order == null || order.getId() == null || findById(order.getId()) != null) {
+        if (order == null || order.getId() == null || order.getId().trim().isEmpty() || findById(order.getId()) != null) {
             return null;
         }
         orders.add(order);
